@@ -1,0 +1,25 @@
+{
+  "name": "nds_study",
+  "version": "1.0.0",
+  "description": "Repo for study nodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Snoopyk8411/nds_study.git"
+  },
+  "bin": {
+    "nds": "index.js"
+  },
+  "author": "sky-w1992@mail.ru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Snoopyk8411/nds_study/issues"
+  },
+  "homepage": "https://github.com/Snoopyk8411/nds_study#readme",
+  "dependencies": {
+    "yargs": "^16.2.0"
+  }
+}

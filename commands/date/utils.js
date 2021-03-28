@@ -1,4 +1,6 @@
-const { NUMBER_TYPE } = require('../../constants');
+const { NUMBER_TYPE } = require('./constants');
+const { MODIFY_FLAGS } = require('./flags');
+
 const YEAR = 'FullYear';
 const MONTH = 'Month';
 const DATE = 'Date';
@@ -22,18 +24,36 @@ const checkDateFlags = (flags = {}, modifier = '') => {
     };
 };
 
+const parseDifference = (modifier, diffValue) => {
+    let difference = 0;
+    if (!modifier || modifier.length === 0) return difference;
+
+    difference = Number.parseInt(`${MODIFY_FLAGS[modifier]}${diffValue}`);
+    return difference;
+};
+
+const getDateFlag = (flags) => {
+    const [flagName] = Object.keys(flags);
+    const flagValue = flags[flagName];
+    return {
+        flag: flagName,
+        flagValue,
+    }
+};
+
 const modifyDate = (date, datePart, difference) => {
     const copiedDate = new Date(date.getTime());
     copiedDate[`set${datePart}`](copiedDate[`get${datePart}`]() + difference);
     return copiedDate;
 };
+
 const modifyOverload = ({ date, difference, part }, method) => {
     if (difference) {
         console.log(modifyDate(date, part, difference).toISOString());
     } else {
         method();
     }
-}
+};
 
 const show = {
     fullDate: (date) => {
@@ -58,5 +78,7 @@ const show = {
 
 module.exports = {
     checkDateFlags,
+    parseDifference,
+    getDateFlag,
     show
 }

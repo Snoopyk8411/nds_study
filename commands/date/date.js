@@ -1,51 +1,60 @@
-const { DATE_CURRENT, DATE_ADD, DATE_SUB } = require('../../constants');
-const { DATE_FLAGS, MONTH_FLAGS, YEAR_FLAGS, MODIFY_FLAGS } = require('./flags');
-const { checkDateFlags, show } = require('./utils');
+const { DATE_CURRENT, DATE_ADD, DATE_SUB } = require('./constants');
+const { DATE_FLAGS, MONTH_FLAGS, YEAR_FLAGS } = require('./flags');
+const {
+    checkDateFlags,
+    parseDifference,
+    getDateFlag,
+    show
+} = require('./utils');
 
-const dateCommands = [DATE_CURRENT, DATE_ADD, DATE_SUB];
+const usePartlyDateShow = (flag, differenceToCurrent) => {
+    // sry for that, indeed it's strange, but funny
+    const segmentToCorrectFlagCase = true;
 
-const generateDate = (flags, modifier) => {
-    const { hasFlag, isFlagValid } = checkDateFlags(flags, modifier);
-    let differenceToCurrent = 0;
-
-    if (hasFlag && isFlagValid) {
-        const [flag] = Object.keys(flags);
-
-        if (modifier && modifier.length !== 0) {
-            const flagValue = flags[flag];
-            differenceToCurrent = Number.parseInt(`${MODIFY_FLAGS[modifier]}${flagValue}`);
-        }
-        // sry for that, indeed it's strange, but funny
-        switch (true) {
-            case DATE_FLAGS[flag]:
-                show.date(new Date, differenceToCurrent);
-                break;
-            case MONTH_FLAGS[flag]:
-                show.month(new Date, differenceToCurrent);
-                break;
-            case YEAR_FLAGS[flag]:
-                show.year(new Date, differenceToCurrent);
-                break;
-        }
-    } else {
-        show.fullDate(new Date);
+    switch (segmentToCorrectFlagCase) {
+        case DATE_FLAGS[flag]:
+            show.date(new Date, differenceToCurrent);
+            break;
+        case MONTH_FLAGS[flag]:
+            show.month(new Date, differenceToCurrent);
+            break;
+        case YEAR_FLAGS[flag]:
+            show.year(new Date, differenceToCurrent);
+            break;
     }
-}
+};
 
+const showDate = (flags, modifier) => {
+    const { hasFlag, isFlagValid } = checkDateFlags(flags, modifier);
+
+    const simpleShow = !hasFlag || !isFlagValid;
+    if (simpleShow) {
+        show.fullDate(new Date);
+        return;
+    }
+
+    const { flag, flagValue } = getDateFlag(flags);
+    let differenceToCurrent = parseDifference(modifier, flagValue);
+
+    usePartlyDateShow(flag, differenceToCurrent);
+};
 
 const runDateCommand = (command, flags) => {
     switch (command) {
         case DATE_CURRENT:
-            generateDate(flags);
+            showDate(flags);
             break;
         case DATE_ADD:
-            generateDate(flags, DATE_ADD);
+            showDate(flags, DATE_ADD);
             break;
         case DATE_SUB:
-            generateDate(flags, DATE_SUB);
+            showDate(flags, DATE_SUB);
             break;
     }
 };
+
+// ---
+const dateCommands = [DATE_CURRENT, DATE_ADD, DATE_SUB];
 module.exports = {
     dateCommands,
     runDateCommand,

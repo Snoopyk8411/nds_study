@@ -1,4 +1,4 @@
-const { DATE_ADD, DATE_SUB } = require('../../constants');
+const { DATE_ADD, DATE_SUB } = require('./constants');
 // use pattern [fullFlag, shorthand]
 const DATE_FLAGS = { date: true, d: true };
 const MONTH_FLAGS = { month: true, m: true };

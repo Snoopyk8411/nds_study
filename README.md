@@ -13,19 +13,19 @@
 ### Date commands
 
 Текущая дата и время в формате ISO:  
-`nds current`
+`nds current`\
 `> 2021-03-29T18:50:22.722Z`
 
 Текущий год:  
-`nds current --year` или `nds current -y`
+`nds current --year` или `nds current -y`\
 `> 2021`
 
 Текущий месяц:  
-`nds current --month` или `nds current -m`
+`nds current --month` или `nds current -m`\
 `> 03`
 
 Дата в календарном месяце:  
-`nds current --date` или `nds current -d`
+`nds current --date` или `nds current -d`\
 `> 29`
 
 Команды `add` и `sub`:\

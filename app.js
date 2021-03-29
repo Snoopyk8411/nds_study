@@ -8,19 +8,19 @@ const { miniGamesCommands, runMiniGameCommand } = require('./commands/mini-games
 const runApp = (userArguments) => {
     const currentCommand = getCommandFromArgs(userArguments);
     const currentFlags = getFlagsFromArgs(userArguments);
-    if (!currentCommand) {
-        console.log(NO_COMMAND_FOUND);
-        return;
-    }
     // ---
-    if (dateCommands.includes(currentCommand)) {
-        runDateCommand(currentCommand, currentFlags);
+    const toCommandRunner = true;
+
+    switch (toCommandRunner) {
+        case dateCommands.includes(currentCommand):
+            runDateCommand(currentCommand, currentFlags);
+            break;
+        case miniGamesCommands.includes(currentCommand):
+            runMiniGameCommand(currentCommand, currentFlags);
+            break;
+        default:
+            console.log(NO_COMMAND_FOUND);
     }
-    // ---
-    if (miniGamesCommands.includes(currentCommand)) {
-        runMiniGameCommand(currentCommand, currentFlags);
-    }
-    
 };
 
 module.exports = {

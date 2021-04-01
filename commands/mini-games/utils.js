@@ -1,7 +1,5 @@
 const readline = require('readline');
-const {
-    SUCCESS_START,
-} = require('./constants');
+const { STOP_WORD } = require('./constants');
 
 const createQuizInterface = () => {
     const quizInterface = readline.createInterface({
@@ -10,9 +8,11 @@ const createQuizInterface = () => {
     });
     return quizInterface;
 };
-
-const getRandomNumber = (max) => {
-    return Math.floor(Math.random() * Math.floor(max));
+// common utils
+const getRandomNumber = (minValue, maxValue) => {
+    let min = Math.ceil(minValue);
+    let max = Math.floor(maxValue);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const checkInputToNum = (input) => {
@@ -21,15 +21,23 @@ const checkInputToNum = (input) => {
     return { isNumber, parsedInput };
 };
 
+const checkInputOnStop = (input) => input === STOP_WORD;
+// ---
 class SingleQuizData {
     constructor() {
         this.numberRange = 0;
+        this.minNumber = 0;
         this.quizNumber = 0;
         this.isCorrectRangeEntered = false;
     }
-    generateQuizNumber = () => {
-        this.quizNumber = getRandomNumber(this.numberRange);
-        console.log(SUCCESS_START, `${this.numberRange}`);
+    changeMinNumberTo = (number) => {
+        this.minNumber = number;
+    }
+    generateQuizNumber = (messageText) => {
+        this.quizNumber = getRandomNumber(this.minNumber, this.numberRange);
+        if (messageText) {
+            console.log(messageText, `${this.numberRange}`);
+        }
     }
     processInputToRange = (answer) => {
         const { isNumber, parsedInput: parsedAnswer } = checkInputToNum(answer);
@@ -44,6 +52,7 @@ class SingleQuizData {
         const isGreater = !isEqual && number < quizNumber;
         const isLess = !isEqual && number > quizNumber;
         return {
+            quizNumber,
             isEqual,
             isGreater,
             isLess,
@@ -55,5 +64,6 @@ module.exports = {
     createQuizInterface,
     getRandomNumber,
     checkInputToNum,
+    checkInputOnStop,
     SingleQuizData,
 };

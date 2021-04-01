@@ -2,9 +2,13 @@ const {
     guessNumberCommands,
     runGuessNumber,
 } = require('./guess-number');
+const {
+    headsOrTailsCommands,
+    runHeadsOrTails,
+} = require('./heads-or-tails');
 
 const miniGamesCommands = []
-    .concat(guessNumberCommands);
+    .concat(guessNumberCommands, headsOrTailsCommands);
 
     // ---
 
@@ -14,6 +18,9 @@ const runMiniGameCommand = (command, flags) => {
     switch (runWhenIncludes) {
         case guessNumberCommands.includes(command):
             runGuessNumber(flags);
+            break;
+        case headsOrTailsCommands.includes(command):
+            runHeadsOrTails(flags);
             break;
     }
 };

@@ -21,6 +21,8 @@ const usePartlyDateShow = (flag, differenceToCurrent) => {
         case YEAR_FLAGS[flag]:
             show.year(new Date, differenceToCurrent);
             break;
+        default:
+            show.fullDate(new Date);
     }
 };
 

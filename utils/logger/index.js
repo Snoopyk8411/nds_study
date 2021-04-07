@@ -2,87 +2,87 @@ const fs = require('fs');
 const path = require('path');
 
 const {
-    LOG_PATH_FLAG,
     LOG_FILE_EXT,
     LOG_FILE_ADDON,
     LOG_DIR_NAME,
-    GIT_IGNORE,
-    FILE_ENCODE,
-    IGNORE_LOG_DIR,
+    LOG_PROGRAM_END,
+    MOVE_TO_ROOT_PATH,
+    SILENT,
 } = require('./constants');
-const { parseFlagsToLogString } = require('./utils');
-
-const callbackWithErrHandle = (content) => (err) => {
-    if (err) throw new Error(err);
-    if (content) console.log(content);
-};
+const {
+    parseFlagsToLogString,
+    addTimeStamp,
+    callbackWithErrHandle,
+    logDirChecker,
+    parseLoggingContent,
+    parseFlagsForFileName,
+} = require('./utils');
 
 class Logger {
     constructor() {
         this.filePath = '';
         this.fileName = '';
         this.logsDirName = '';
-        this.moveToRootPath = ['..', '..'];
-        this.logDirIsIgnored = false;
     }
+    // main method
     initLogging = (command, flags) => {
-        this.generateLogFileName(command);
-        this.checkLogDir();
-        this.createLogFile(command, flags);
-    }
-    // ---
-    createLogFile = (command, flags) => {
-        const logFilePath = path.join(this.logsDirName, this.fileName);
-        // ---
-        const timestamp = (new Date).toISOString();
-        const logFlagsString = parseFlagsToLogString(flags);
-        const createTemplate = `[${timestamp}] User command = ${command}, User flags = ${logFlagsString}\n`;
-        // ---
-        const correctOperation = !fs.existsSync(logFilePath) ? 'write' : 'append';
-        fs[`${correctOperation}File`](logFilePath, createTemplate, callbackWithErrHandle());
+        const {
+            hasLogFilePath,
+            parsedFileName,
+            parsedDirName,
+        } = parseFlagsForFileName(flags);
+        if (hasLogFilePath) {
+            this.fileName = parsedFileName;
+            this.logsDirName = parsedDirName;
+        } else {
+            this.generateLogFileName(command);
+            this.generateLogsDirName(flags);
+            logDirChecker(this.logsDirName).check();
+        }
+        this.initLogFile(command, flags);
     }
     // ---
     generateLogFileName = (base) => {
         this.fileName = `${base}${LOG_FILE_ADDON}${LOG_FILE_EXT}`;
     }
     generateLogsDirName = () => {
-        this.logsDirName = path.join(__dirname, ...this.moveToRootPath, LOG_DIR_NAME);
+        this.logsDirName = path.join(__dirname, ...MOVE_TO_ROOT_PATH, LOG_DIR_NAME);
     }
     // ---
-    checkLogDir = () => {
-        this.generateLogsDirName();
+    initLogFile = (command, flags) => {
+        this.filePath = path.join(this.logsDirName, this.fileName);
+        // ---
+        const logFlagsString = parseFlagsToLogString(flags);
+        const initTemplate = addTimeStamp(`User command = ${command}, User flags = ${logFlagsString}\n`);
+        // ---
+        this.addToFile(initTemplate);
+    }
+    // ---
+    log = (...rawContent) => {
+        const { content, mode } = parseLoggingContent(rawContent);
+        if (content === LOG_PROGRAM_END) {
+            this.logProgramEnd();
+            return;
+        }
 
-        if (!fs.existsSync(this.logsDirName)) {
-            fs.mkdir(this.logsDirName, callbackWithErrHandle(this.logsDirName));
+        if (mode !== SILENT) {
+            console.log(content);
         }
-        this.checkLogDirIsIgnored();
+        const contentTemplate = addTimeStamp(`${content}\n`);
+        this.addToFile(contentTemplate);
     }
-    checkLogDirIsIgnored = () => {
-        const gitIgnorePath = path.join(__dirname, ...this.moveToRootPath, GIT_IGNORE);
-        const ignoreFileExists = fs.existsSync(gitIgnorePath);
-        if (ignoreFileExists) {
-            this.parseIgnoreFile(gitIgnorePath, `${LOG_DIR_NAME}`);
-        }
+    logProgramEnd = () => {
+        this.addToFile(`${LOG_PROGRAM_END}\n`, true);
     }
-    // ---
-    parseIgnoreFile = (path, target) => {
-        const readerStream = fs.createReadStream(path);
-        readerStream.setEncoding(FILE_ENCODE);
-        readerStream.on('data', (chunk) => {
-            this.logDirIsIgnored = chunk.includes(target);
-        });
-        readerStream.on('end', () => {
-            this.addLogDirToIgnore(path);
-        });
+    addToFile = (content, isSync) => {
+        const correctOperation = !fs.existsSync(this.filePath) ? 'write' : 'append';
+        fs[`${correctOperation}File${isSync ? 'Sync':''}`](this.filePath, content, callbackWithErrHandle());
     }
-    addLogDirToIgnore = (ignoreFile) => {
-        if (!this.logDirIsIgnored) {
-            fs.appendFile(ignoreFile, IGNORE_LOG_DIR, callbackWithErrHandle('ok'));
-        }
-    }
-    // ---
 }
 
+const logger = new Logger();
 module.exports = {
-    Logger,
+    logger,
+    LOG_PROGRAM_END,
+    SILENT,
 };

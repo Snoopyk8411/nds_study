@@ -1,6 +1,8 @@
 const { NUMBER_TYPE } = require('./constants');
 const { MODIFY_FLAGS } = require('./flags');
 
+const { logger } = require('../../utils/logger');
+
 const YEAR = 'FullYear';
 const MONTH = 'Month';
 const DATE = 'Date';
@@ -49,7 +51,7 @@ const modifyDate = (date, datePart, difference) => {
 
 const modifyOverload = ({ date, difference, part }, method) => {
     if (difference) {
-        console.log(modifyDate(date, part, difference).toISOString());
+        logger.log(modifyDate(date, part, difference).toISOString());
     } else {
         method();
     }
@@ -57,22 +59,22 @@ const modifyOverload = ({ date, difference, part }, method) => {
 
 const show = {
     fullDate: (date) => {
-        console.log(date.toISOString());
+        logger.log(date.toISOString());
     },
     year: (date, difference) => modifyOverload({date, difference, part: YEAR},
         () => {
             const year = date.getFullYear();
-            console.log(year);
+            logger.log(year);
         }),
     month: (date, difference) => modifyOverload({date, difference, part: MONTH},
         () => {
             const month = date.getMonth() + 1;
-            console.log(month);
+            logger.log(month);
         }),
     date: (date, difference) => modifyOverload({date, difference, part: DATE},
         () => {
             const day = date.getDate();
-            console.log(day);
+            logger.log(day);
         }),
 };
 

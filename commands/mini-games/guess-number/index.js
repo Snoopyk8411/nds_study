@@ -14,11 +14,15 @@ const {
     checkInputToNum,
     SingleQuizData,
     checkInputOnStop,
+    logger,
+    SILENT,
 } = require('../utils');
 const singleQuiz = new SingleQuizData();
 
 const askForRange = (quiz) => {
-    quiz.question(GAME_START_QUESTION, (answer) => {
+    logger.log(GAME_START_QUESTION, SILENT);
+    quiz.question(`${GAME_START_QUESTION} \n`, (answer) => {
+        logger.log(answer, SILENT);
         singleQuiz.processInputToRange(answer);
 
         if (singleQuiz.isCorrectRangeEntered) {
@@ -31,6 +35,7 @@ const askForRange = (quiz) => {
 
 const initTryGuessBehaviour = (quiz) => {
     quiz.on(USER_INPUT, (input) => {
+        logger.log(input, SILENT);
         const isStopWord = checkInputOnStop(input);
         if (isStopWord) {
             quiz.close();
@@ -39,7 +44,7 @@ const initTryGuessBehaviour = (quiz) => {
         // ---
         const { isNumber, parsedInput } = checkInputToNum(input);
         if (!isNumber) {
-            console.log(BAD_NUMBER_INPUT);
+            logger.log(BAD_NUMBER_INPUT);
             return;
         }
         // ---
@@ -49,10 +54,10 @@ const initTryGuessBehaviour = (quiz) => {
             isLess,
         } = singleQuiz.compareWithQuizNumber(parsedInput);
 
-        if (isGreater) console.log(GREATER);
-        if (isLess) console.log(LESS);
+        if (isGreater) logger.log(GREATER);
+        if (isLess) logger.log(LESS);
         if (isEqual) {
-            console.log(SUCCESS_TRY, input);
+            logger.log(SUCCESS_TRY, input);
             quiz.close();
         }
     });

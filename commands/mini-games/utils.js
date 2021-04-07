@@ -1,5 +1,6 @@
 const readline = require('readline');
 const { STOP_WORD } = require('./constants');
+const { logger, SILENT } = require('../../utils/logger');
 
 const createQuizInterface = () => {
     const quizInterface = readline.createInterface({
@@ -36,7 +37,7 @@ class SingleQuizData {
     generateQuizNumber = (messageText) => {
         this.quizNumber = getRandomNumber(this.minNumber, this.numberRange);
         if (messageText) {
-            console.log(messageText, `${this.numberRange}`);
+            logger.log(messageText, `${this.numberRange}`);
         }
     }
     processInputToRange = (answer) => {
@@ -66,4 +67,6 @@ module.exports = {
     checkInputToNum,
     checkInputOnStop,
     SingleQuizData,
+    logger,
+    SILENT,
 };

@@ -12,6 +12,8 @@ const {
     createQuizInterface,
     checkInputToNum,
     SingleQuizData,
+    logger,
+    SILENT,
 } = require('../utils');
 const singleQuiz = new SingleQuizData();
 
@@ -19,14 +21,15 @@ const initQuizSettings = () => {
     singleQuiz.changeMinNumberTo(1);
     singleQuiz.processInputToRange(2);
     singleQuiz.generateQuizNumber();
-    console.log(SUCCESS_START);
+    logger.log(SUCCESS_START);
 };
 
 const initTryGuessBehaviour = (quiz) => {
     quiz.on(USER_INPUT, (input) => {
+        logger.log(input, SILENT);
         const { isNumber, parsedInput } = checkInputToNum(input);
         if (!isNumber) {
-            console.log(BAD_NUMBER_INPUT);
+            logger.log(BAD_NUMBER_INPUT);
             return;
         }
         // ---
@@ -36,9 +39,9 @@ const initTryGuessBehaviour = (quiz) => {
         } = singleQuiz.compareWithQuizNumber(parsedInput);
 
         if (isEqual) {
-            console.log(SUCCESS_TRY, hotVariablesDict[quizNumber]);
+            logger.log(SUCCESS_TRY, hotVariablesDict[quizNumber]);
         } else {
-            console.log(FAIL_TRY, hotVariablesDict[quizNumber]);
+            logger.log(FAIL_TRY, hotVariablesDict[quizNumber]);
         }
         quiz.close();
     });

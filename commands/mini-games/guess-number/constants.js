@@ -5,9 +5,9 @@ const {
 } = require('../constants');
 // minigames commands
 const GUESS_NUM = 'guess-number';
-const GAME_START_QUESTION = 'Пожалуйста, придумайте число, для старта игры \n';
-const SUCCESS_START = 'Загадано число в диапазоне от 0 до';
-const SUCCESS_TRY = 'Отгадано число -';
+const GAME_START_QUESTION = 'Пожалуйста, придумайте число, для старта игры';
+const SUCCESS_START = 'Загадано число в диапазоне от 0 до ';
+const SUCCESS_TRY = 'Отгадано число - ';
 const GREATER = 'Больше';
 const LESS = 'Меньше';
 

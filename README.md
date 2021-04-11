@@ -21,7 +21,7 @@
 
 ### Weather commands
 Для того, чтобы узнать погоду в текущем городе используйте команду:\
-`nds weather`\
+`nds weather`
 ```
 {
   request: { type: 'City', query: 'Moscow, Russia', language: 'en', unit: 'm' },
@@ -61,7 +61,7 @@
 По умолчанию, прогноз выдается для Москвы, для любого другого места используйте флаг `--city <city_name>`\
 `nds weather --city Madrid`\
 По умолчанию, ответ возвращается в формате JSON, для красивого сообщения используйте флаг `--show_pretty`\
-`nds weather --city Madrid --show_pretty`\
+`nds weather --city Madrid --show_pretty`
 ```
 At Madrid, Spain on 03:57 PM is:
 Partly cloudy with temperature of 16 C, but feels like: 16 C.

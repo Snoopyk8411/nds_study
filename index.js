@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node -r dotenv/config
 
 const { getArgs } = require('./utils/args');
 const { runApp } = require('./app');

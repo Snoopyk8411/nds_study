@@ -21,5 +21,8 @@
   "homepage": "https://github.com/Snoopyk8411/nds_study#readme",
   "dependencies": {
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
